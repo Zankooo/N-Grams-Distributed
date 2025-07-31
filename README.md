@@ -10,7 +10,7 @@
 ### Javi virtual machine sem dal na voljo cca 16GB max heap size (rama) za izvajanje programa. Na trajanje programa je zelo pomembno koliko ga imamo na voljo, saj uporabljamo v programu podatkovno strukturo HashMap in kot input dajemo podatke ki so precej veliki. (HashMap in veliki podatki --> hitrost izvajanja programa odvisna od velikosti rama)</ins>
 ### Testiranje je bilo opravljenju na petih različno velikih .txt file-ih. Dolzina n-gramov pa je od 2 do 5. Tesitranje je bilo opravljeno brez printanja n-gramov z pojavitvami in relativnimi frekvencami. Če bi jih printali bi program trajal občutno dlje.
 
-ta tabela je od paralelne še
+
 
 | Tabela    | n = 2     | n = 3     | n = 4     | n = 5     |
 |-----------|-----------|-----------|-----------|-----------|
@@ -20,8 +20,8 @@ ta tabela je od paralelne še
 | **490MB** | 16,77 sec | 26,65 sec | 38,78 sec | 48,68 sec |
 | **613MB** | 18,98 sec | 31,81 sec | 47,40 sec | 60,25 sec |
 
-#### Opomba: številke so zapisane v evropskem formatu, kjer vejica pomeni decimalko
-
+#### Opomba 1: Pri testiranju je bilo število workerjev; 4. 
+#### Opomba 2: številke so zapisane v evropskem formatu, kjer vejica pomeni decimalko
 <hr>
 
 ## <ins>Pomembne opombe za uspešno delovanje programa</ins>
