@@ -9,6 +9,9 @@ public class Main {
     public static int dolzinaNGrama;
 
     public static void main(String[] args) {
+        long maxHeapSize = Runtime.getRuntime().maxMemory();
+        System.out.println("Max Heap Size (količina rama za JVM): " + (maxHeapSize / (1024 * 1024)) + " MB");
+
         MPI.Init(args);
         int rank = MPI.COMM_WORLD.Rank();
 
@@ -23,38 +26,9 @@ public class Main {
 
         MPI.Finalize();
     }
-// -------- -------- -------- -------- -------- -------- -------- -------- -------- --------
-    // Funkcija za branje podatkov iz txt
-    public static String[] beriInPripraviPodatke() {
-        dolzinaNGrama = 5;
-
-        Path projectRoot = Paths.get(System.getProperty("user.dir")).getParent();
-        Path filePath = Paths.get(projectRoot.toString(), "resources", "613MB.txt");
-        System.out.println("Berem datoteko iz: " + filePath.toAbsolutePath());
-
-        String text;
-        try {
-            text = Files.readString(filePath, StandardCharsets.UTF_8);
-            System.out.println("Datoteka uspešno prebrana!");
-        } catch (IOException e) {
-            System.err.println("NAPAKA: Datoteka ne obstaja ali ni dostopna! " + e.getMessage());
-            MPI.Finalize();
-            System.exit(1);
-            return new String[0]; // za varnost
-        }
-
-        if (text.isEmpty()) {
-            System.err.println("NAPAKA: Datoteka je prazna!");
-            MPI.Finalize();
-            System.exit(1);
-        }
-
-        text = odstraniZnakce(text);
-        return text.split("[.!?]");
-    }
 
     // -------- -------- -------- -------- -------- -------- -------- -------- -------- --------
-    // ✅ Funkcija za MPI obdelavo
+    // Funkcija za MPI obdelavo
     public static void mpiObdelava(String[] povedi) {
         int rank = MPI.COMM_WORLD.Rank();
         int size = MPI.COMM_WORLD.Size();
@@ -90,6 +64,7 @@ public class Main {
 
             // Izračun relativnih frekvenc
             Map<String, Double> relFrekvence = izracunajRelativneFrekvence(allNgrams);
+
             // izpisiVse(allNgrams, relFrekvence);
 
             double konec = System.currentTimeMillis();
@@ -97,9 +72,9 @@ public class Main {
             double casIzvedbeSekunde = (konec - zacetek) / 1000;
             String evropskaNotacijaCasIzvedbeSec = String.format("%.2f", casIzvedbeSekunde).replace('.', ',');
             System.out.println("\u001B[32m✔ ⏱ Celoten porazdeljen proces je trajal: " + evropskaNotacijaCasIzvedbeSec + " sec\u001B[0m");
+        }
 
-        } else {
-
+        else {
             // WORKER: prejme dolžino n-gramov
             int[] nVal = new int[1];
             MPI.COMM_WORLD.Recv(nVal, 0, 1, MPI.INT, 0, 99);
@@ -117,35 +92,42 @@ public class Main {
 
             // Pošlji nazaj masterju
             MPI.COMM_WORLD.Send(new Object[]{ngrams}, 0, 1, MPI.OBJECT, 0, 1);
+
         }
     }
 
 // -------- -------- -------- -------- METODE -------- -------- -------- -------- -------- --------
 
-//    public static String preberiIzTxt(String path) {
-//        Path filePath = Paths.get(path);
-//        System.out.println("Berem datoteko iz: " + filePath.toAbsolutePath());
-//
-//        // Preveri, če datoteka obstaja in je berljiva
-//        if (!Files.exists(filePath)) {
-//            System.err.println("NAPAKA: Datoteka ne obstaja na lokaciji: " + filePath.toAbsolutePath());
-//            return "";
-//        }
-//        if (!Files.isReadable(filePath)) {
-//            System.err.println("NAPAKA: Datoteka ni berljiva!");
-//            return "";
-//        }
-//
-//        // Poskusi prebrati datoteko
-//        try {
-//            return Files.readString(filePath, StandardCharsets.UTF_8);
-//        } catch (IOException e) {
-//            System.err.println("NAPAKA pri branju datoteke: " + e.getMessage());
-//        } catch (OutOfMemoryError e) {
-//            System.err.println("NAPAKA: Datoteka je prevelika za branje v pomnilnik! Uporabi manjšo datoteko ali povečaj heap (-Xmx).");
-//        }
-//        return "";
-//    }
+    // Funkcija za branje podatkov iz txt
+    // malo drugacna funkcija kot v paralelni in sekvencni verziji
+    // tam se funkciji rece; preberiIzTxt
+    public static String[] beriInPripraviPodatke() {
+        dolzinaNGrama = 5;
+
+        Path projectRoot = Paths.get(System.getProperty("user.dir")).getParent();
+        Path filePath = Paths.get(projectRoot.toString(), "resources", "613MB.txt");
+        System.out.println("Berem datoteko iz: " + filePath.toAbsolutePath());
+
+        String text;
+        try {
+            text = Files.readString(filePath, StandardCharsets.UTF_8);
+            System.out.println("Datoteka uspešno prebrana!");
+        } catch (IOException e) {
+            System.err.println("NAPAKA: Datoteka ne obstaja ali ni dostopna! " + e.getMessage());
+            MPI.Finalize();
+            System.exit(1);
+            return new String[0]; // za varnost
+        }
+
+        if (text.isEmpty()) {
+            System.err.println("NAPAKA: Datoteka je prazna!");
+            MPI.Finalize();
+            System.exit(1);
+        }
+
+        text = odstraniZnakce(text);
+        return text.split("[.!?]");
+    }
 
     public static String odstraniZnakce(String text) {
         return text.replaceAll("[,;:¡¿]", "");
@@ -195,4 +177,17 @@ public class Main {
             glavna.put(entry.getKey(), glavna.getOrDefault(entry.getKey(), 0) + entry.getValue());
         }
     }
+
+    public static void izpisiVse(Map<String, Integer> ngrams, Map<String, Double> frekvence) {
+        System.out.println("\n----- Vsi n-grami in frekvence -----");
+        for (Map.Entry<String, Integer> entry : ngrams.entrySet()) {
+            String ngram = entry.getKey();
+            int ponovitve = entry.getValue();
+            double frekvenca = frekvence.getOrDefault(ngram, 0.0);
+            System.out.printf("%s -> %d -> %.4f%%%n", ngram, ponovitve, frekvenca * 100);
+        }
+        System.out.println("-----------------------------------");
+    }
+
+
 }

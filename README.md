@@ -46,3 +46,5 @@ ta tabela je od paralelne še
 ### - vedno ko spremenim kodo Main.java jo morem compilat v Main class. To nardiš z kodo v terminalu: javac -cp .:$MPJ_HOME/lib/mpj.jar Main.java 
 ### - in šele potem lahko runnaš z mpjrun.sh -np 4 Main      
 ### - in za vsako spremembo ko jo nardiš moreš spet compilat in run: dva koraka torej
+
+### - kako določaš heap space pri mpj: ko zelis runnat program daš to komando; mpjrun.sh -np 4 -Xmx4g Main --> (drugače pa zgleda vzame 1/4 vseha razpoložljivega rama na računalniku)
