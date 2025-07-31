@@ -39,7 +39,7 @@ ta tabela je od paralelne še
 ## <ins>Druge informacije - kako sem naložil mpi/mpj</ins>
 ### - mpi oz mpj sem prenesel iz https://sourceforge.net/projects/mpjexpress/files/releases/ in prenesel najnovejšo verzijo (iz: 2015-04-17)
 ### - potem sem moral manualno dodati MPJ knjižnico v Intellij -> file -> project structure -> libraries in dodati pot do mpj.jar
-### - dodati sem moral tudi okoljke spremenljivke: (MPJ_HOME in PATH) -> v .zshrc sem dodal 1.  export MPJ_HOME=~/Downloads/mpi-mpj 2.  export PATH=$PATH:$MPJ_HOME/bin 
+### - dodati sem moral tudi okoljke spremenljivke: (MPJ_HOME in PATH) -> v .zshrc (komanda v terminal: nano .zshrc) sem dodal; Prva vrstica:  export MPJ_HOME=~/Downloads/mpi-mpj Druga vrstica;  export PATH=$PATH:$MPJ_HOME/bin 
 ### - in potem sem z komando mpjrun.sh preveril ali je vse v redu
 ### - potem sem pa šel v mapo src in  program pognal preko terminala z komando mpjrun.sh -np 4 Proba in delovalo je
 ### -
