@@ -1,4 +1,4 @@
-# Analysis of N-grams (simple text analysis) - porazdeljena (distributed)
+# Analysis of N-grams (simple text analysis) - porazdeljena (distributed) izvedba
 
 ## <ins>Kaj dela</ins>:
 ### Kaj program dela si lahko prebereš na naslednji povezavi:
