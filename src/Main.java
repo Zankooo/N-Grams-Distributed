@@ -6,43 +6,70 @@ import java.nio.charset.StandardCharsets;
 
 public class Main {
 
-    public static void main(String[] args){
+    public static int dolzinaNGrama;
+
+    public static void main(String[] args) {
         MPI.Init(args);
+        int rank = MPI.COMM_WORLD.Rank();
+
+        if (rank == 0) {
+            // MASTER: prebere datoteko in pripravi podatke
+            String[] povedi = beriInPripraviPodatke();
+            mpiObdelava(povedi);
+        } else {
+            // WORKER: samo čaka na delo
+            mpiObdelava(null);
+        }
+
+        MPI.Finalize();
+    }
+// -------- -------- -------- -------- -------- -------- -------- -------- -------- --------
+    // Funkcija za branje podatkov iz txt
+    public static String[] beriInPripraviPodatke() {
+        dolzinaNGrama = 5;
+
+        Path projectRoot = Paths.get(System.getProperty("user.dir")).getParent();
+        Path filePath = Paths.get(projectRoot.toString(), "resources", "613MB.txt");
+        System.out.println("Berem datoteko iz: " + filePath.toAbsolutePath());
+
+        String text;
+        try {
+            text = Files.readString(filePath, StandardCharsets.UTF_8);
+            System.out.println("Datoteka uspešno prebrana!");
+        } catch (IOException e) {
+            System.err.println("NAPAKA: Datoteka ne obstaja ali ni dostopna! " + e.getMessage());
+            MPI.Finalize();
+            System.exit(1);
+            return new String[0]; // za varnost
+        }
+
+        if (text.isEmpty()) {
+            System.err.println("NAPAKA: Datoteka je prazna!");
+            MPI.Finalize();
+            System.exit(1);
+        }
+
+        text = odstraniZnakce(text);
+        return text.split("[.!?]");
+    }
+
+    // -------- -------- -------- -------- -------- -------- -------- -------- -------- --------
+    // ✅ Funkcija za MPI obdelavo
+    public static void mpiObdelava(String[] povedi) {
         int rank = MPI.COMM_WORLD.Rank();
         int size = MPI.COMM_WORLD.Size();
 
-        long zacetek = 0;
-        long konec = 0;
-
-        int n = 3; // nastavi dolžino n-gramov (po potrebi spremeni tukaj)
-
         if (rank == 0) {
-            zacetek = System.currentTimeMillis();
+            double zacetek = System.currentTimeMillis();
 
-            // MASTER: prebere datoteko in razdeli povedi
-            // Premakni se eno mapo višje iz src v projekt root in nato v resources
-
-            Path projectRoot = Paths.get(System.getProperty("user.dir")).getParent();
-            String filePath = Paths.get(projectRoot.toString(), "resources", "123MB.txt").toString();
-            String text = preberiIzTxt(filePath);
-
-            // Preveri, če je datoteka prazna
-            if (text.isEmpty()) {
-                System.err.println("Datoteka je prazna ali ni bila uspešno prebrana!");
-                MPI.Finalize();
-                return;
-            }
-
-            text = odstraniZnakce(text);
-            String[] povedi = text.split("[.!?]");
             System.out.println("Število povedi: " + povedi.length);
 
-            // pošlji dolžino n-gramov workerjem
+            // Pošlji dolžino n-gramov workerjem
             for (int i = 1; i < size; i++) {
-                MPI.COMM_WORLD.Send(new int[]{n}, 0, 1, MPI.INT, i, 99);
+                MPI.COMM_WORLD.Send(new int[]{dolzinaNGrama}, 0, 1, MPI.INT, i, 99);
             }
 
-            // razdeli povedi na workerje
+            // Razdeli povedi med workere
             int chunkSize = (int) Math.ceil((double) povedi.length / (size - 1));
             int start = 0;
             for (int i = 1; i < size; i++) {
@@ -52,7 +79,7 @@ public class Main {
                 start = end;
             }
 
-            // zberi rezultate
+            // Zberi rezultate
             Map<String, Integer> allNgrams = new HashMap<>();
             for (int i = 1; i < size; i++) {
                 Object[] recvObj = new Object[1];
@@ -61,62 +88,64 @@ public class Main {
                 zdruziMape(allNgrams, localNgrams);
             }
 
-            // izračun relativnih frekvenc
+            // Izračun relativnih frekvenc
             Map<String, Double> relFrekvence = izracunajRelativneFrekvence(allNgrams);
-            //izpisiVse(allNgrams, relFrekvence);
+            // izpisiVse(allNgrams, relFrekvence);
 
-            konec = System.currentTimeMillis();
-            System.out.println("\u001B[32m✔ ⏱ Distribuirana izvedba je trajala: " + (konec - zacetek) + " ms\u001B[0m");
+            double konec = System.currentTimeMillis();
+
+            double casIzvedbeSekunde = (konec - zacetek) / 1000;
+            String evropskaNotacijaCasIzvedbeSec = String.format("%.2f", casIzvedbeSekunde).replace('.', ',');
+            System.out.println("\u001B[32m✔ ⏱ Celoten porazdeljen proces je trajal: " + evropskaNotacijaCasIzvedbeSec + " sec\u001B[0m");
 
         } else {
+
             // WORKER: prejme dolžino n-gramov
             int[] nVal = new int[1];
             MPI.COMM_WORLD.Recv(nVal, 0, 1, MPI.INT, 0, 99);
             int nGramLen = nVal[0];
 
-            // prejme povedi
+            // Prejme povedi
             Object[] recvObj = new Object[1];
             MPI.COMM_WORLD.Recv(recvObj, 0, 1, MPI.OBJECT, 0, 0);
             String[] chunk = (String[]) recvObj[0];
 
-            // združi chunk v besedilo in izračunaj n-grame
+            // Združi chunk v besedilo in izračunaj n-grame
             StringBuilder sb = new StringBuilder();
             for (String s : chunk) sb.append(s).append(". ");
             Map<String, Integer> ngrams = generateNGrams(nGramLen, sb.toString());
 
-            // pošlji nazaj masterju
+            // Pošlji nazaj masterju
             MPI.COMM_WORLD.Send(new Object[]{ngrams}, 0, 1, MPI.OBJECT, 0, 1);
         }
-
-        MPI.Finalize();
     }
 
-    // ------------------ Metode ------------------
+// -------- -------- -------- -------- METODE -------- -------- -------- -------- -------- --------
 
-    public static String preberiIzTxt(String path) {
-        Path filePath = Paths.get(path);
-        System.out.println("Berem datoteko iz: " + filePath.toAbsolutePath());
-
-        // Preveri, če datoteka obstaja in je berljiva
-        if (!Files.exists(filePath)) {
-            System.err.println("NAPAKA: Datoteka ne obstaja na lokaciji: " + filePath.toAbsolutePath());
-            return "";
-        }
-        if (!Files.isReadable(filePath)) {
-            System.err.println("NAPAKA: Datoteka ni berljiva!");
-            return "";
-        }
-
-        // Poskusi prebrati datoteko
-        try {
-            return Files.readString(filePath, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            System.err.println("NAPAKA pri branju datoteke: " + e.getMessage());
-        } catch (OutOfMemoryError e) {
-            System.err.println("NAPAKA: Datoteka je prevelika za branje v pomnilnik! Uporabi manjšo datoteko ali povečaj heap (-Xmx).");
-        }
-        return "";
-    }
+//    public static String preberiIzTxt(String path) {
+//        Path filePath = Paths.get(path);
+//        System.out.println("Berem datoteko iz: " + filePath.toAbsolutePath());
+//
+//        // Preveri, če datoteka obstaja in je berljiva
+//        if (!Files.exists(filePath)) {
+//            System.err.println("NAPAKA: Datoteka ne obstaja na lokaciji: " + filePath.toAbsolutePath());
+//            return "";
+//        }
+//        if (!Files.isReadable(filePath)) {
+//            System.err.println("NAPAKA: Datoteka ni berljiva!");
+//            return "";
+//        }
+//
+//        // Poskusi prebrati datoteko
+//        try {
+//            return Files.readString(filePath, StandardCharsets.UTF_8);
+//        } catch (IOException e) {
+//            System.err.println("NAPAKA pri branju datoteke: " + e.getMessage());
+//        } catch (OutOfMemoryError e) {
+//            System.err.println("NAPAKA: Datoteka je prevelika za branje v pomnilnik! Uporabi manjšo datoteko ali povečaj heap (-Xmx).");
+//        }
+//        return "";
+//    }
 
     public static String odstraniZnakce(String text) {
         return text.replaceAll("[,;:¡¿]", "");
