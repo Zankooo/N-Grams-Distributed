@@ -42,3 +42,7 @@ ta tabela je od paralelne še
 ### - dodati sem moral tudi okoljke spremenljivke: (MPJ_HOME in PATH) -> v .zshrc sem dodal 1.  export MPJ_HOME=~/Downloads/mpi-mpj 2.  export PATH=$PATH:$MPJ_HOME/bin 
 ### - in potem sem z komando mpjrun.sh preveril ali je vse v redu
 ### - potem sem pa šel v mapo src in  program pognal preko terminala z komando mpjrun.sh -np 4 Proba in delovalo je
+### -
+### - vedno ko spremenim kodo Main.java jo morem compilat v Main class. To nardiš z kodo v terminalu: javac -cp .:$MPJ_HOME/lib/mpj.jar Main.java 
+### - in šele potem lahko runnaš z mpjrun.sh -np 4 Main      
+### - in za vsako spremembo ko jo nardiš moreš spet compilat in run: dva koraka torej
