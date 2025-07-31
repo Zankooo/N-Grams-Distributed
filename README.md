@@ -12,13 +12,13 @@
 
 ta tabela je od paralelne še
 
-| Tabela    | n = 2      | n = 3      | n = 4      | n = 5      |
-|-----------|------------|------------|------------|------------|
-| **123MB** | 6,174 sec  | 7,333 sec  | 9,442 sec  | 10,720 sec |
-| **234MB** | 13,529 sec | 22,771 sec | 27,805 sec | 32,627 sec |
-| **350MB** | 19,535 sec | 32,419 sec | 40,578 sec | 41,631 sec |
-| **490MB** | 14,793 sec | 20,828 sec | 28,628 sec | 36,848 sec |
-| **613MB** | 16,711 sec | 24,694 sec | 35,710 sec | 42,679 sec |
+| Tabela    | n = 2     | n = 3     | n = 4     | n = 5     |
+|-----------|-----------|-----------|-----------|-----------|
+| **123MB** | 4,26 sec  | 7,51 sec  | 10,83 sec | 12,73 sec |
+| **234MB** | 15,49 sec | 25,49 sec | 31,30 sec | 36,89 sec |
+| **350MB** | 22,33 sec | 38,07 sec | 46,73 sec | 49,51 sec |
+| **490MB** | 16,77 sec | 26,65 sec | 38,78 sec | 48,68 sec |
+| **613MB** | 18,98 sec | 31,81 sec | 47,40 sec | 60,25 sec |
 
 #### Opomba: številke so zapisane v evropskem formatu, kjer vejica pomeni decimalko
 

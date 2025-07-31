@@ -109,6 +109,7 @@ public class Main {
         System.out.println("Berem datoteko iz: " + filePath.toAbsolutePath());
 
         String text;
+
         try {
             text = Files.readString(filePath, StandardCharsets.UTF_8);
             System.out.println("Datoteka uspešno prebrana!");
