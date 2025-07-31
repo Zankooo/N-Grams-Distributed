@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args){
         MPI.Init(args);
         int rank = MPI.COMM_WORLD.Rank();
         int size = MPI.COMM_WORLD.Size();
@@ -21,9 +21,9 @@ public class Main {
 
             // MASTER: prebere datoteko in razdeli povedi
             // Premakni se eno mapo višje iz src v projekt root in nato v resources
+
             Path projectRoot = Paths.get(System.getProperty("user.dir")).getParent();
             String filePath = Paths.get(projectRoot.toString(), "resources", "123MB.txt").toString();
-
             String text = preberiIzTxt(filePath);
 
             // Preveri, če je datoteka prazna
@@ -97,43 +97,23 @@ public class Main {
         Path filePath = Paths.get(path);
         System.out.println("Berem datoteko iz: " + filePath.toAbsolutePath());
 
-        // Preveri, če datoteka obstaja
+        // Preveri, če datoteka obstaja in je berljiva
         if (!Files.exists(filePath)) {
             System.err.println("NAPAKA: Datoteka ne obstaja na lokaciji: " + filePath.toAbsolutePath());
-            System.err.println("Trenutni delovni direktorij: " + System.getProperty("user.dir"));
-
-            // Poskusi najti datoteko v trenutnem direktoriju
-            Path alternativePath = Paths.get("123MB.txt");
-            if (Files.exists(alternativePath)) {
-                System.out.println("Datoteka najdena v trenutnem direktoriju, uporabljam to pot...");
-                filePath = alternativePath;
-            } else {
-                // Preveri, če obstaja mapa resources
-                Path resourcesDir = Paths.get("resources");
-                if (!Files.exists(resourcesDir)) {
-                    System.err.println("Mapa 'resources' ne obstaja. Ustvari jo z: mkdir resources");
-                }
-                return "";
-            }
+            return "";
         }
-
-        // Preveri, če je datoteka berljiva
         if (!Files.isReadable(filePath)) {
-            System.err.println("NAPAKA: Nimam pravic za branje datoteke!");
+            System.err.println("NAPAKA: Datoteka ni berljiva!");
             return "";
         }
 
+        // Poskusi prebrati datoteko
         try {
-            // Preberi datoteko z UTF-8 kodiranjem
-            String content = Files.readString(filePath, StandardCharsets.UTF_8);
-            System.out.println("Datoteka uspešno prebrana. Velikost: " + content.length() + " znakov");
-            return content;
+            return Files.readString(filePath, StandardCharsets.UTF_8);
         } catch (IOException e) {
             System.err.println("NAPAKA pri branju datoteke: " + e.getMessage());
-            e.printStackTrace();
         } catch (OutOfMemoryError e) {
-            System.err.println("NAPAKA: Datoteka je prevelika za branje v pomnilnik!");
-            System.err.println("Poskusite z manjšo datoteko ali povečajte heap size z -Xmx parametrom");
+            System.err.println("NAPAKA: Datoteka je prevelika za branje v pomnilnik! Uporabi manjšo datoteko ali povečaj heap (-Xmx).");
         }
         return "";
     }
