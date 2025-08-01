@@ -33,28 +33,28 @@
 #### Opomba 2: Ta setup je za macos, za windows je rahlo drugače
 
 ### 1. Če programa še nimaš lokalno, ga pridobiš z komando v terminal:
-### ` git clone https://github.com/Zankooo/N-Grams-Distributed.git`
+#### ` git clone https://github.com/Zankooo/N-Grams-Distributed.git`
 ### 2. V root direktoriju ustvariš direktorij 'resources' in vanj daš datoteke iz tega linka:
 ### https://drive.google.com/drive/folders/1GnL52MgBBja04Hhqun_TRghp_sVrtZ2F?usp=share_link
 ### 3. Za delovanje programa je potrebno manualno naložiti knjižnico (library) MPI/MPJ. To narediš na tej povezavi; 
 ### https://sourceforge.net/projects/mpjexpress/files/releases/ 
 ### in preneseš najnovejšo verzijo (iz: 2015-04-17)
 ### 4. Nato moraš manualno dodati MPJ v Intellij 
-### ` file -> project structure -> libraries in dodati pot do mpj.jar`
+#### ` file -> project structure -> libraries in dodati pot do mpj.jar`
 ### 5. Nato moraš dodati okoljke spremenljivke (MPJ_HOME in PATH). V zshrc (komanda v terminal: nano .zshrc) dodaš vrstici:
-### `export MPJ_HOME=~/pot-do-root-direktorija-mpi-mpj` 
-### `export PATH=$PATH:$MPJ_HOME/bin`
+#### `export MPJ_HOME=~/pot-do-root-direktorija-mpi-mpj` 
+#### `export PATH=$PATH:$MPJ_HOME/bin`
 ### 6. S komando 
 ### `mpjrun.sh`
 ### preveriš ali je vse okej! Če ja je to to za setup
 ### 7. Program pa poženeš ne z green button v Intellij ampak tudi to je manualno
 ### V terminalu moraš prvo compliati Main.java in šele nato lahko poženeš. To narediš pa:
-### `javac -cp .:$MPJ_HOME/lib/mpj.jar Main.java` - compile
-### `mpjrun.sh -np 4 Main` - poženeš in dela! Cifra med -np in Main je število workerjev. In heapspace je 1/4 rama
+#### `javac -cp .:$MPJ_HOME/lib/mpj.jar Main.java` - compile
+#### `mpjrun.sh -np 4 Main` - poženeš in dela! Cifra med -np in Main je število workerjev. In heapspace je 1/4 rama
 ### <ins>8. Dodatno</ins>: 
 ### - In vedno ko narediš spremembo v kodi moraš ponovno compile in pognati (dve komandi)!
 ### - Manualno heap space lahko določaš če komandi za pogon dodaj še -Xmx8g (spremenimo cifro po želji koliko rama mu dodamo). Recimo:
-### `mpjrun.sh -np 4 -Xmx8g Main`  
+#### `mpjrun.sh -np 4 -Xmx8g Main`  
 
 
 ## <ins>Druge informacije</ins>
