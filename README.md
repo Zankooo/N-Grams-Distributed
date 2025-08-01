@@ -1,7 +1,11 @@
 # Analysis of N-grams (simple text analysis) - porazdeljena (distributed) izvedba
 
 ## <ins>Kaj dela</ins>:
-### Kaj program dela si lahko prebereš na naslednji povezavi:
+### Več o tem; 
+### - Kaj program dela, 
+### - Uporaba in
+### - Primer uporabe 
+### si lahko prebereš na naslednji povezavi:
 ### https://github.com/Zankooo/N-Grams-Sequential
 
 ## <ins> Testiranje </ins>
@@ -24,27 +28,44 @@
 #### Opomba 2: številke so zapisane v evropskem formatu, kjer vejica pomeni decimalko
 <hr>
 
-## <ins>Pomembne opombe za uspešno delovanje programa</ins>
-### Program te na začetku vpraša; ali želiš vpisati besedilo kot input ali pa boš bral besede iz external file-a (kot input sem dal možnost samo za to, da sem lahko testiral na zelo kratkem besedilu.)
-### Ko pa izbereš "naravno pot" oziroma daš 2 (da boš bral iz external file-a), pa je pomembno, da pred tem ustvariš direktorij z imenom *resources* (ustvari ga v mapi projekta, ne v src) in v njega daš datoteke z besedili. Datoteke z besedili so na voljo na tej povezavi:
-### https://drive.google.com/drive/folders/1GnL52MgBBja04Hhqun_TRghp_sVrtZ2F?usp=share_link
+## <ins>Zelo pomembna navodila za uspešen zagon programa (step by step)</ins>
+#### Opomba 1: Setup za delovanje je precej daljši kot pri sekvenčni in vzporedni verziji).
+#### Opomba 2: Ta setup je za macos, za windows je rahlo drugače
 
-<hr>
+### 1. Če programa še nimaš lokalno, ga pridobiš z komando v terminal:
+### ` git clone https://github.com/Zankooo/N-Grams-Distributed.git`
+### 2. V root direktoriju ustvariš direktorij 'resources' in vanj daš datoteke iz tega linka:
+### https://drive.google.com/drive/folders/1GnL52MgBBja04Hhqun_TRghp_sVrtZ2F?usp=share_link
+### 3. Za delovanje programa je potrebno manualno naložiti knjižnico (library) MPI/MPJ. To narediš na tej povezavi; 
+### https://sourceforge.net/projects/mpjexpress/files/releases/ 
+### in preneseš najnovejšo verzijo (iz: 2015-04-17)
+### 4. Nato moraš manualno dodati MPJ v Intellij 
+### ` file -> project structure -> libraries in dodati pot do mpj.jar`
+### 5. Nato moraš dodati okoljke spremenljivke (MPJ_HOME in PATH). V zshrc (komanda v terminal: nano .zshrc) dodaš vrstici:
+### `export MPJ_HOME=~/pot-do-root-direktorija-mpi-mpj` 
+### `export PATH=$PATH:$MPJ_HOME/bin`
+### 6. S komando 
+### `mpjrun.sh`
+### preveriš ali je vse okej! Če ja je to to za setup
+### 7. Program pa poženeš ne z green button v Intellij ampak tudi to je manualno
+### V terminalu moraš prvo compliati Main.java in šele nato lahko poženeš. To narediš pa:
+### `javac -cp .:$MPJ_HOME/lib/mpj.jar Main.java` - compile
+### `mpjrun.sh -np 4 Main` - poženeš in dela! Cifra med -np in Main je število workerjev. In heapspace je 1/4 rama
+### <ins>8. Dodatno</ins>: 
+### - In vedno ko narediš spremembo v kodi moraš ponovno compile in pognati (dve komandi)!
+### - Manualno heap space lahko določaš če komandi za pogon dodaj še -Xmx8g (spremenimo cifro po želji koliko rama mu dodamo). Recimo:
+### `mpjrun.sh -np 4 -Xmx8g Main`  
 
 
 ## <ins>Druge informacije</ins>
 ### - uporabljal sem trenutno najnovejšo verzijo Jave; JDK 24
-### - pri izdelovanju programa sem si pomagal z umetno inteligenco - predvsem ChatGPT-4o, Gemini 2.5 pro in DeepSeek
 
-## <ins>Druge informacije - kako sem naložil mpi/mpj</ins>
-### - mpi oz mpj sem prenesel iz https://sourceforge.net/projects/mpjexpress/files/releases/ in prenesel najnovejšo verzijo (iz: 2015-04-17)
-### - potem sem moral manualno dodati MPJ knjižnico v Intellij -> file -> project structure -> libraries in dodati pot do mpj.jar
-### - dodati sem moral tudi okoljke spremenljivke: (MPJ_HOME in PATH) -> v .zshrc (komanda v terminal: nano .zshrc) sem dodal; Prva vrstica:  export MPJ_HOME=~/Downloads/mpi-mpj Druga vrstica;  export PATH=$PATH:$MPJ_HOME/bin 
-### - in potem sem z komando mpjrun.sh preveril ali je vse v redu
-### - potem sem pa šel v mapo src in  program pognal preko terminala z komando mpjrun.sh -np 4 Proba in delovalo je
-### -
-### - vedno ko spremenim kodo Main.java jo morem compilat v Main class. To nardiš z kodo v terminalu: javac -cp .:$MPJ_HOME/lib/mpj.jar Main.java 
-### - in šele potem lahko runnaš z mpjrun.sh -np 4 Main (stevilka za -np je število workerjev - računalnikov)
-### - in za vsako spremembo ko jo nardiš moreš spet compilat in run: dva koraka torej
 
-### - kako določaš heap space pri mpj: ko zelis runnat program daš to komando; mpjrun.sh -np 4 -Xmx4g Main --> (drugače pa zgleda vzame 1/4 vseha razpoložljivega rama na računalniku)
+
+## <ins>Viri in literatura</ins>
+### Primarno sem si pri izdelovanju projekta pomagal z znanjem pridobljenim na predavanjih in vajah:
+### https://e.famnit.upr.si/course/view.php?id=6182 - letošnja eučilnica
+### https://e.famnit.upr.si/course/view.php?id=4943 - eučilnica preteklih let
+### Za nekaj praktičnih nasvetov sem se obrnil tudi na prijatelja, ki je predmet že opravil. Prav tako sem redno komuniciral s sošolci preko Discorda s katerimi sem se pogovarjal o skupnih problemih. Eden od teh je bil setup MPI.
+### Seveda sem se pa posluževal tudi umetne inteligence, brez katere bi bilo narediti implementacijo projekta precej težje; ChatGPT-4o, Gemini 2.5 Pro in DeepSeek.
+
