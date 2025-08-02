@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
         long maxHeapSize = Runtime.getRuntime().maxMemory();
-        System.out.println("Max Heap Size (količina rama za JVM): " + (maxHeapSize / (1024 * 1024)) + " MB");
+        System.out.println("Max Heap Size (kolicina rama za JVM): " + (maxHeapSize / (1024 * 1024)) + " MB");
 
         MPI.Init(args);
         int rank = MPI.COMM_WORLD.Rank();
@@ -20,7 +20,7 @@ public class Main {
             String[] povedi = beriInPripraviPodatke();
             mpiObdelava(povedi);
         } else {
-            // WORKER: samo čaka na delo
+            // WORKER: samo Caka na delo
             mpiObdelava(null);
         }
 
@@ -36,9 +36,9 @@ public class Main {
         if (rank == 0) {
             double zacetek = System.currentTimeMillis();
 
-            System.out.println("Število povedi: " + povedi.length);
+            System.out.println("Stevilo povedi: " + povedi.length);
 
-            // Pošlji dolžino n-gramov workerjem
+            // Pošlji dolzino n-gramov workerjem
             for (int i = 1; i < size; i++) {
                 MPI.COMM_WORLD.Send(new int[]{dolzinaNGrama}, 0, 1, MPI.INT, i, 99);
             }
@@ -62,7 +62,7 @@ public class Main {
                 zdruziMape(allNgrams, localNgrams);
             }
 
-            // Izračun relativnih frekvenc
+            // Izracun relativnih frekvenc
             Map<String, Double> relFrekvence = izracunajRelativneFrekvence(allNgrams);
 
             // izpisiVse(allNgrams, relFrekvence);
@@ -75,7 +75,7 @@ public class Main {
         }
 
         else {
-            // WORKER: prejme dolžino n-gramov
+            // WORKER: prejme dolzino n-gramov
             int[] nVal = new int[1];
             MPI.COMM_WORLD.Recv(nVal, 0, 1, MPI.INT, 0, 99);
             int nGramLen = nVal[0];
@@ -85,12 +85,12 @@ public class Main {
             MPI.COMM_WORLD.Recv(recvObj, 0, 1, MPI.OBJECT, 0, 0);
             String[] chunk = (String[]) recvObj[0];
 
-            // Združi chunk v besedilo in izračunaj n-grame
+            // Zdruzi chunk v besedilo in izracunaj n-grame
             StringBuilder sb = new StringBuilder();
             for (String s : chunk) sb.append(s).append(". ");
             Map<String, Integer> ngrams = generateNGrams(nGramLen, sb.toString());
 
-            // Pošlji nazaj masterju
+            // Poslji nazaj masterju
             MPI.COMM_WORLD.Send(new Object[]{ngrams}, 0, 1, MPI.OBJECT, 0, 1);
 
         }
@@ -112,7 +112,7 @@ public class Main {
 
         try {
             text = Files.readString(filePath, StandardCharsets.UTF_8);
-            System.out.println("Datoteka uspešno prebrana!");
+            System.out.println("Datoteka uspesno prebrana!");
         } catch (IOException e) {
             System.err.println("NAPAKA: Datoteka ne obstaja ali ni dostopna! " + e.getMessage());
             MPI.Finalize();
