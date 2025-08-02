@@ -3,10 +3,15 @@
 ## <ins>Kaj dela</ins>:
 ### Več o tem; 
 ### - Kaj program dela, 
-### - Uporaba in
+
 ### - Primer uporabe 
 ### si lahko prebereš na naslednji povezavi:
 ### https://github.com/Zankooo/N-Grams-Sequential
+
+## <ins>Uporaba</ins>: Program uporabljamo tako, da mu določimo dva argumenta.
+### - prvi je neko dolgo besedilo in,
+### - drugi n, ki je dolžina n-gramov.
+### Oba parametra mu določimo znotraj kode. Oba parametra določimo v funkciji; beriInPripraviPodatke(), v vrstici 104
 
 ## <ins> Testiranje </ins>
 ### Za testiranje sem uporabil svoj lasten laptop: <ins>Apple MacBook Pro, M1 Max, 64GB/2TB</ins>.
