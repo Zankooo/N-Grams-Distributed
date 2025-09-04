@@ -1,5 +1,7 @@
 # Analysis of N-grams (simple text analysis) - porazdeljena (distributed) izvedba
 
+Podatkovna analiza. Tekstovna analiza
+
 ## Kaj dela
 Več o tem; 
 - Kaj program dela, 
