@@ -2,22 +2,16 @@
 
 Podatkovna analiza. Tekstovna analiza
 
-## Kaj dela
-Več o tem; 
-- Kaj program dela, 
+## 🧩 Kaj dela
+Več o tem;
+- Kaj program dela,
+- uporaba in
+- primer uporabe,
 
-## Primer uporabe 
-Več si lahko prebereš na naslednji povezavi:
+si lahko prebereš na naslednji povezavi:
 https://github.com/Zankooo/N-Grams-Sequential
 
-## Uporaba
-Program uporabljamo tako, da mu določimo dva argumenta.
-- prvi je neko dolgo besedilo in,
-- drugi n, ki je dolžina n-gramov.
-
-Oba parametra mu določimo znotraj kode. Oba parametra določimo v funkciji; beriInPripraviPodatke(), v vrstici 104
-
-## Testiranje
+## 🏁 Testiranje
 Za testiranje sem uporabil svoj lasten laptop: <ins>Apple MacBook Pro, M1 Max, 64GB/2TB</ins>.
 (Komp sem kupil za 1600eur in še 16 inch je :) )
 Javi virtual machine sem dal na voljo cca 16GB max heap size (rama) za izvajanje programa. Na trajanje programa je zelo pomembno koliko ga imamo na voljo, saj uporabljamo v programu podatkovno strukturo HashMap in kot input dajemo podatke ki so precej veliki. (HashMap in veliki podatki --> hitrost izvajanja programa odvisna od velikosti rama)</ins>
@@ -37,7 +31,7 @@ Opomba 1: Pri testiranju je bilo število workerjev; 4.
 Opomba 2: številke so zapisane v evropskem formatu, kjer vejica pomeni decimalko
 
 
-## Zelo pomembna navodila za uspešen zagon programa
+## 🚩 Zelo pomembna navodila za uspešen zagon programa
 Opomba 1: Setup za delovanje je precej daljši kot pri sekvenčni in vzporedni verziji).
 Opomba 2: Ta setup je za macos, za windows je rahlo drugače
 
@@ -66,12 +60,12 @@ V terminalu moraš prvo compliati Main.java in šele nato lahko poženeš. To na
 `mpjrun.sh -np 4 -Xmx8g Main`  
 
 
-## Druge informacije
+## 💬 Druge informacije
 - uporabljal sem trenutno najnovejšo verzijo Jave; JDK 24
 
 
 
-## Viri in literatura
+## 📚 Viri in literatura
 Primarno sem si pri izdelovanju projekta pomagal z znanjem pridobljenim na predavanjih in vajah:
 - https://e.famnit.upr.si/course/view.php?id=6182 - letošnja eučilnica
 - https://e.famnit.upr.si/course/view.php?id=4943 - eučilnica preteklih let
